@@ -1,0 +1,20 @@
+// Extrait du fichier _Vocabulaire_Vietnamien_Global.xlsm — version de test
+export const sampleWords = [
+  { id: 1, theme: 'Nourriture', viet: 'Hải sản', fr: 'Fruits de mer' },
+  { id: 2, theme: 'Nourriture', viet: 'Rau', fr: 'Légumes' },
+  { id: 3, theme: 'Nourriture', viet: 'Đường', fr: 'Sucre' },
+  { id: 4, theme: 'Fruits', viet: 'Xoài', fr: 'Mangue' },
+  { id: 5, theme: 'Fruits', viet: 'Dừa', fr: 'Noix de coco' },
+  { id: 6, theme: 'Fruits', viet: 'Dứa', fr: 'Ananas' },
+  { id: 7, theme: 'Boissons', viet: 'Nước', fr: 'Eau' },
+  { id: 8, theme: 'Boissons', viet: 'Cà phê', fr: 'Café' },
+  { id: 9, theme: 'Boissons', viet: 'Sữa', fr: 'Lait' },
+  { id: 10, theme: 'Verbes', viet: 'Muốn', fr: 'Vouloir' },
+  { id: 11, theme: 'Verbes', viet: 'Có thể', fr: 'Pouvoir' },
+  { id: 12, theme: 'Verbes', viet: 'Thêm', fr: 'Ajouter' },
+  { id: 13, theme: 'Corps', viet: 'Mặt', fr: 'Visage' },
+  { id: 14, theme: 'Corps', viet: 'Đầu', fr: 'Tête' },
+  { id: 15, theme: 'Saveurs', viet: 'Cay', fr: 'Piquant' },
+  { id: 16, theme: 'Saveurs', viet: 'Ngọt', fr: 'Sucré' },
+  { id: 17, theme: 'Saveurs', viet: 'Mặn', fr: 'Salé' },
+]
