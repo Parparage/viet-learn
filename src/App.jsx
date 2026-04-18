@@ -1,15 +1,16 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Flashcard from './components/Flashcard'
-import { sampleWords } from './data/words'
+import { vocabulary } from './data/words'
 
 export default function App() {
   const [index, setIndex] = useState(0)
   const [isFlipped, setIsFlipped] = useState(false)
   const [known, setKnown] = useState(new Set())
   const [toReview, setToReview] = useState(new Set())
+  const audioRef = useRef(null)
 
-  const total = sampleWords.length
-  const word = sampleWords[index]
+  const total = vocabulary.length
+  const word = vocabulary[index]
 
   const goTo = (newIndex) => {
     setIsFlipped(false)
@@ -29,12 +30,22 @@ export default function App() {
   }
 
   const speak = () => {
-    if (!window.speechSynthesis) return
-    window.speechSynthesis.cancel()
-    const u = new SpeechSynthesisUtterance(word.viet)
-    u.lang = 'vi-VN'
-    u.rate = 0.8
-    window.speechSynthesis.speak(u)
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
+    const audio = new Audio(`/audio/${word.id}.mp3`)
+    audioRef.current = audio
+    audio.playbackRate = 0.85
+    audio.play().catch(() => {
+      // Fallback Web Speech API si le fichier est absent
+      if (!window.speechSynthesis) return
+      window.speechSynthesis.cancel()
+      const u = new SpeechSynthesisUtterance(word.viet)
+      u.lang = 'vi-VN'
+      u.rate = 0.75
+      window.speechSynthesis.speak(u)
+    })
   }
 
   const progressPct = ((index + 1) / total) * 100
@@ -125,7 +136,7 @@ export default function App() {
 
           {/* Points de progression */}
           <div className="flex gap-1.5 items-center">
-            {sampleWords.map((w, i) => (
+            {vocabulary.map((w, i) => (
               <div
                 key={w.id}
                 className={`rounded-full transition-all duration-200 ${
