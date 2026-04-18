@@ -134,23 +134,9 @@ export default function App() {
             ‹
           </button>
 
-          {/* Points de progression */}
-          <div className="flex gap-1.5 items-center">
-            {vocabulary.map((w, i) => (
-              <div
-                key={w.id}
-                className={`rounded-full transition-all duration-200 ${
-                  i === index
-                    ? 'w-3 h-3 bg-red-600'
-                    : known.has(w.id)
-                    ? 'w-2 h-2 bg-green-400'
-                    : toReview.has(w.id)
-                    ? 'w-2 h-2 bg-orange-400'
-                    : 'w-2 h-2 bg-gray-200'
-                }`}
-              />
-            ))}
-          </div>
+          <span className="text-base font-bold text-gray-500 w-16 text-center">
+            {index + 1} / {total}
+          </span>
 
           <button
             onClick={() => goTo(index + 1)}
