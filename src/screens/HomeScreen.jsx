@@ -36,7 +36,7 @@ export default function HomeScreen({ vocabulary, progress, streak, onStartSessio
     const file = e.target.files?.[0]
     if (!file) return
     try {
-      const words = await parseXlsm(file)
+      const words = await parseXlsm(file, vocabulary)
       onVocabUpdate(words)
       alert(`✓ ${words.length} mots importés avec succès !`)
     } catch {

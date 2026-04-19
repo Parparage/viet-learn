@@ -41,6 +41,12 @@ export default function App() {
   const updateVocab = (words) => {
     setVocabulary(words)
     localStorage.setItem(VOCAB_KEY, JSON.stringify(words))
+    // Génère la liste des nouveaux mots pour information
+    const existing = new Set(vocabulary.map(w => w.viet.toLowerCase()))
+    const newWords = words.filter(w => !existing.has(w.viet.toLowerCase()))
+    if (newWords.length > 0) {
+      console.info(`Nouveaux mots ajoutés (relancer generate_audio.py) :`, newWords.map(w => `${w.id}. ${w.viet}`))
+    }
   }
 
   if (screen === 'session') {

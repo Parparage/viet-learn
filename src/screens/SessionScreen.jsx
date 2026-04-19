@@ -13,7 +13,7 @@ export default function SessionScreen({ words, packName, progress, onBack, onCom
 
   const word = chunk[index]
   const total = chunk.length
-  const status = progress.getStatus(word?.id)
+  const status = progress.getStatus(word?.viet)
 
   const goTo = (i) => {
     setIsFlipped(false)
@@ -22,7 +22,7 @@ export default function SessionScreen({ words, packName, progress, onBack, onCom
   }
 
   const mark = (s) => {
-    progress.mark(word.id, s)
+    progress.mark(word.viet, s)
     goTo(index + 1)
   }
 
