@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import HomeScreen from './screens/HomeScreen'
 import SessionScreen from './screens/SessionScreen'
+import AssimilScreen from './screens/AssimilScreen'
 import { useProgress } from './hooks/useProgress'
 import { useStreak } from './hooks/useStreak'
 import { useSilentMode } from './hooks/useSilentMode'
@@ -18,6 +19,15 @@ function loadVocab() {
 export default function App() {
   const [screen, setScreen] = useState('home')
   const [session, setSession] = useState({ words: [], name: '', type: 'flashcard-vn-fr' })
+  const [online, setOnline]   = useState(navigator.onLine)
+
+  useEffect(() => {
+    const up   = () => setOnline(true)
+    const down = () => setOnline(false)
+    window.addEventListener('online',  up)
+    window.addEventListener('offline', down)
+    return () => { window.removeEventListener('online', up); window.removeEventListener('offline', down) }
+  }, [])
   const [vocabulary, setVocabulary] = useState(loadVocab)
   const progress = useProgress()
   const streak   = useStreak()
@@ -48,6 +58,10 @@ export default function App() {
     localStorage.setItem(VOCAB_KEY, JSON.stringify(words))
   }
 
+  if (screen === 'assimil') {
+    return <AssimilScreen online={online} onBack={() => setScreen('home')} />
+  }
+
   if (screen === 'session') {
     return (
       <SessionScreen
@@ -70,9 +84,11 @@ export default function App() {
       progress={progress}
       streak={streak}
       silent={silent}
+      online={online}
       onToggleSilent={toggleSilent}
       onStartSession={startSession}
       onVocabUpdate={updateVocab}
+      onOpenAssimil={() => setScreen('assimil')}
     />
   )
 }

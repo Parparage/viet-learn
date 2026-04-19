@@ -27,7 +27,7 @@ function ProgressBar({ known, total }) {
   )
 }
 
-export default function HomeScreen({ vocabulary, progress, streak, silent, onToggleSilent, onStartSession, onVocabUpdate }) {
+export default function HomeScreen({ vocabulary, progress, streak, silent, online, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil }) {
   const fileRef = useRef(null)
   const [picker, setPicker] = useState(null) // { words, name } | null
 
@@ -140,8 +140,27 @@ export default function HomeScreen({ vocabulary, progress, streak, silent, onTog
           </div>
         </section>
 
-        {/* Import */}
+        {/* Leçons Assimil */}
         <section className="mt-6">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Écoute</h2>
+          <button
+            onClick={onOpenAssimil}
+            className="w-full bg-white border border-gray-200 rounded-2xl p-4 text-left shadow-sm active:scale-95 transition-transform flex items-center gap-4"
+          >
+            <span className="text-3xl">🎧</span>
+            <div className="flex-1">
+              <p className="font-bold text-gray-800">Leçons Assimil</p>
+              <p className="text-xs text-gray-400">98 leçons · écoute active phrase par phrase</p>
+            </div>
+            {!online
+              ? <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-lg">Hors-ligne</span>
+              : <span className="text-gray-300 text-xl">›</span>
+            }
+          </button>
+        </section>
+
+        {/* Import */}
+        <section className="mt-4">
           <input ref={fileRef} type="file" accept=".xlsm,.xlsx" className="hidden" onChange={handleImport} />
           <button
             onClick={() => fileRef.current?.click()}
