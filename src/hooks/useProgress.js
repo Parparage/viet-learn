@@ -1,13 +1,18 @@
 import { useState, useCallback } from 'react'
 
 const KEY = 'viet-progress'
-
-// La clé de progression est le mot vietnamien (stable même si la liste change)
-// word.id n'est utilisé que pour les fichiers audio
+const SRS_DAYS = 7 // un mot "su" revient en "à revoir" après 7 jours sans révision
 
 function load() {
   try { return JSON.parse(localStorage.getItem(KEY) || '{}') }
   catch { return {} }
+}
+
+function getRaw(progress, wordViet) {
+  const entry = progress[wordViet]
+  if (!entry) return { status: 'new', lastSeen: 0 }
+  if (typeof entry === 'string') return { status: entry, lastSeen: 0 } // rétrocompat
+  return entry
 }
 
 export function useProgress() {
@@ -15,20 +20,26 @@ export function useProgress() {
 
   const mark = useCallback((wordViet, status) => {
     setProgress(prev => {
-      const next = { ...prev, [wordViet]: status }
+      const next = { ...prev, [wordViet]: { status, lastSeen: Date.now() } }
       localStorage.setItem(KEY, JSON.stringify(next))
       return next
     })
   }, [])
 
-  // Clé stable = texte vietnamien normalisé
-  const getStatus = (wordViet) => progress[wordViet] || 'new'
+  const getStatus = useCallback((wordViet) => {
+    const { status, lastSeen } = getRaw(progress, wordViet)
+    if (status === 'known' && lastSeen) {
+      const daysSince = (Date.now() - lastSeen) / 86400000
+      if (daysSince > SRS_DAYS) return 'review' // décroissance SRS automatique
+    }
+    return status
+  }, [progress])
 
-  const countFor = (words) => ({
-    known:  words.filter(w => progress[w.viet] === 'known').length,
-    review: words.filter(w => progress[w.viet] === 'review').length,
-    total:  words.length,
-  })
+  const countFor = useCallback((words) => {
+    const known  = words.filter(w => getStatus(w.viet) === 'known').length
+    const review = words.filter(w => getStatus(w.viet) === 'review').length
+    return { known, review, total: words.length }
+  }, [getStatus])
 
   return { mark, getStatus, countFor, progress }
 }

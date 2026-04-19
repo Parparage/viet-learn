@@ -3,6 +3,7 @@ import HomeScreen from './screens/HomeScreen'
 import SessionScreen from './screens/SessionScreen'
 import { useProgress } from './hooks/useProgress'
 import { useStreak } from './hooks/useStreak'
+import { useSilentMode } from './hooks/useSilentMode'
 import { vocabulary as defaultVocab } from './data/words'
 
 const VOCAB_KEY = 'viet-vocab'
@@ -16,20 +17,19 @@ function loadVocab() {
 
 export default function App() {
   const [screen, setScreen] = useState('home')
-  const [sessionWords, setSessionWords] = useState([])
-  const [packName, setPackName] = useState('')
+  const [session, setSession] = useState({ words: [], name: '', type: 'flashcard-vn-fr' })
   const [vocabulary, setVocabulary] = useState(loadVocab)
   const progress = useProgress()
-  const streak = useStreak()
+  const streak   = useStreak()
+  const { silent, toggle: toggleSilent } = useSilentMode()
 
-  const startSession = (words, name) => {
-    setSessionWords(words)
-    setPackName(name)
+  const startSession = (words, name, exerciseType) => {
+    setSession({ words, name, type: exerciseType })
     setScreen('session')
   }
 
   const continueSession = (remainingWords) => {
-    setSessionWords(remainingWords)
+    setSession(s => ({ ...s, words: remainingWords }))
     setScreen('session')
   }
 
@@ -39,23 +39,25 @@ export default function App() {
   }
 
   const updateVocab = (words) => {
-    setVocabulary(words)
-    localStorage.setItem(VOCAB_KEY, JSON.stringify(words))
-    // Génère la liste des nouveaux mots pour information
     const existing = new Set(vocabulary.map(w => w.viet.toLowerCase()))
     const newWords = words.filter(w => !existing.has(w.viet.toLowerCase()))
     if (newWords.length > 0) {
-      console.info(`Nouveaux mots ajoutés (relancer generate_audio.py) :`, newWords.map(w => `${w.id}. ${w.viet}`))
+      console.info('Nouveaux mots (relancer generate_audio.py) :', newWords.map(w => `${w.id}. ${w.viet}`))
     }
+    setVocabulary(words)
+    localStorage.setItem(VOCAB_KEY, JSON.stringify(words))
   }
 
   if (screen === 'session') {
     return (
       <SessionScreen
-        key={`${packName}-${sessionWords[0]?.id}`}
-        words={sessionWords}
-        packName={packName}
+        key={`${session.name}-${session.words[0]?.id}`}
+        words={session.words}
+        packName={session.name}
+        exerciseType={session.type}
+        allWords={vocabulary}
         progress={progress}
+        silent={silent}
         onBack={endSession}
         onComplete={continueSession}
       />
@@ -67,6 +69,8 @@ export default function App() {
       vocabulary={vocabulary}
       progress={progress}
       streak={streak}
+      silent={silent}
+      onToggleSilent={toggleSilent}
       onStartSession={startSession}
       onVocabUpdate={updateVocab}
     />

@@ -1,5 +1,3 @@
-import * as XLSX from 'xlsx'
-
 /**
  * Lit un fichier .xlsm/.xlsx et retourne la liste de mots.
  * - Les mots déjà connus (même texte vietnamien) conservent leur ID audio existant.
@@ -7,6 +5,7 @@ import * as XLSX from 'xlsx'
  * Ainsi, ajouter des mots ne casse jamais la progression ni les fichiers audio.
  */
 export async function parseXlsm(file, existingVocab = []) {
+  const XLSX = await import('xlsx') // chargement différé — réduit le bundle principal
   const buffer = await file.arrayBuffer()
   const wb = XLSX.read(buffer, { type: 'array' })
   const ws = wb.Sheets[wb.SheetNames[0]]
