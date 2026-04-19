@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import Flashcard from '../components/Flashcard'
 import ExerciseQCM from '../components/ExerciseQCM'
 import ExerciseDictee from '../components/ExerciseDictee'
+import ExerciseTextATrou from '../components/ExerciseTextATrou'
 
 const SESSION_SIZE = 20
 
@@ -11,9 +12,11 @@ function buildExerciseTypes(words, type) {
     if (type === 'random-silent') return Math.random() < 0.5 ? 'flashcard-vn-fr' : 'flashcard-fr-vn'
     if (type === 'random') {
       const r = Math.random()
-      if (r < 0.4) return 'flashcard-vn-fr'
-      if (r < 0.7) return 'qcm'
-      return 'dictee'
+      if (r < 0.30) return 'flashcard-vn-fr'
+      if (r < 0.50) return 'flashcard-fr-vn'
+      if (r < 0.70) return 'qcm'
+      if (r < 0.85) return 'dictee'
+      return 'texte-a-trou'
     }
     return type
   })
@@ -24,6 +27,7 @@ const EXERCISE_LABELS = {
   'flashcard-fr-vn': '🔄 Flashcards FR→VN',
   'qcm':             '🎧 QCM Écoute',
   'dictee':          '✍️ Dictée',
+  'texte-a-trou':    '📝 Texte à trou',
   'random':          '🎲 Mode aléatoire',
   'random-silent':   '🔇 Aléatoire silencieux',
 }
@@ -176,6 +180,18 @@ export default function SessionScreen({ words, packName, exerciseType, allWords,
               onKnown={onKnown}
               onReview={onReview}
               silent={isSilent}
+            />
+          </div>
+        )}
+
+        {/* Texte à trou */}
+        {currentType === 'texte-a-trou' && (
+          <div className="w-full max-w-sm">
+            <ExerciseTextATrou
+              key={word.id}
+              word={word}
+              onKnown={onKnown}
+              onReview={onReview}
             />
           </div>
         )}

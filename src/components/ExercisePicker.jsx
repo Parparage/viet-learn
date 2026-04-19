@@ -1,10 +1,11 @@
 const EXERCISES = [
-  { id: 'flashcard-vn-fr', icon: '🃏', label: 'Flashcards',       sub: 'Vietnamien → Français' },
-  { id: 'flashcard-fr-vn', icon: '🔄', label: 'Flashcards',       sub: 'Français → Vietnamien' },
-  { id: 'qcm',             icon: '🎧', label: 'QCM Écoute',       sub: 'Écouter et choisir' },
-  { id: 'dictee',          icon: '✍️', label: 'Dictée',           sub: 'Écouter et écrire' },
-  { id: 'random',          icon: '🎲', label: 'Mode aléatoire',   sub: 'Tous les exercices' },
-  { id: 'random-silent',   icon: '🔇', label: 'Aléatoire silencieux', sub: 'Sans audio (transports)' },
+  { id: 'flashcard-vn-fr', icon: '🃏', label: 'Flashcards',            sub: 'Vietnamien → Français' },
+  { id: 'flashcard-fr-vn', icon: '🔄', label: 'Flashcards',            sub: 'Français → Vietnamien' },
+  { id: 'qcm',             icon: '🎧', label: 'QCM Écoute',            sub: 'Écouter et choisir' },
+  { id: 'dictee',          icon: '✍️', label: 'Dictée de mots',        sub: 'Écouter et écrire' },
+  { id: 'texte-a-trou',    icon: '📝', label: 'Texte à trou',          sub: 'Compléter la phrase' },
+  { id: 'random',          icon: '🎲', label: 'Mode aléatoire',        sub: 'Tous les exercices' },
+  { id: 'random-silent',   icon: '🔇', label: 'Aléatoire silencieux',  sub: 'Sans audio (transports)' },
 ]
 
 export default function ExercisePicker({ pack, onPick, onClose }) {
