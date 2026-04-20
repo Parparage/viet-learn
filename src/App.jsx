@@ -3,6 +3,7 @@ import HomeScreen from './screens/HomeScreen'
 import SessionScreen from './screens/SessionScreen'
 import AssimilScreen from './screens/AssimilScreen'
 import { useProgress } from './hooks/useProgress'
+import { usePacksProgress } from './hooks/usePacksProgress'
 import { useStreak } from './hooks/useStreak'
 import { useSilentMode } from './hooks/useSilentMode'
 import { vocabulary as defaultVocab } from './data/words'
@@ -18,7 +19,7 @@ function loadVocab() {
 
 export default function App() {
   const [screen, setScreen] = useState('home')
-  const [session, setSession] = useState({ words: [], name: '', type: 'flashcard-vn-fr' })
+  const [session, setSession] = useState({ words: [], name: '', type: 'flashcard-vn-fr', packId: null })
   const [online, setOnline]   = useState(navigator.onLine)
 
   useEffect(() => {
@@ -29,12 +30,13 @@ export default function App() {
     return () => { window.removeEventListener('online', up); window.removeEventListener('offline', down) }
   }, [])
   const [vocabulary, setVocabulary] = useState(loadVocab)
-  const progress = useProgress()
-  const streak   = useStreak()
+  const progress      = useProgress()
+  const packsProgress = usePacksProgress()
+  const streak        = useStreak()
   const { silent, toggle: toggleSilent } = useSilentMode()
 
-  const startSession = (words, name, exerciseType) => {
-    setSession({ words, name, type: exerciseType })
+  const startSession = (words, name, exerciseType, packId = null) => {
+    setSession({ words, name, type: exerciseType, packId })
     setScreen('session')
   }
 
@@ -62,6 +64,10 @@ export default function App() {
     return <AssimilScreen online={online} onBack={() => setScreen('home')} />
   }
 
+  const sessionProgress = session.packId
+    ? packsProgress.getProgressFor(session.packId)
+    : progress
+
   if (screen === 'session') {
     return (
       <SessionScreen
@@ -70,7 +76,7 @@ export default function App() {
         packName={session.name}
         exerciseType={session.type}
         allWords={vocabulary}
-        progress={progress}
+        progress={sessionProgress}
         silent={silent}
         onBack={endSession}
         onComplete={continueSession}
@@ -82,6 +88,7 @@ export default function App() {
     <HomeScreen
       vocabulary={vocabulary}
       progress={progress}
+      packsProgress={packsProgress}
       streak={streak}
       silent={silent}
       online={online}

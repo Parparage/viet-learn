@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { parseXlsm } from '../utils/importXlsm'
 import ExercisePicker from '../components/ExercisePicker'
+import { PACKS } from '../data/packs/index'
 
 const THEME_COLORS = {
   'Nourriture':             'bg-orange-100 text-orange-700 border-orange-200',
@@ -27,17 +28,17 @@ function ProgressBar({ known, total }) {
   )
 }
 
-export default function HomeScreen({ vocabulary, progress, streak, silent, online, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil }) {
+export default function HomeScreen({ vocabulary, progress, packsProgress, streak, silent, online, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil }) {
   const fileRef = useRef(null)
-  const [picker, setPicker] = useState(null) // { words, name } | null
+  const [picker, setPicker] = useState(null) // { words, name, packId } | null
 
   const themes = [...new Set(vocabulary.map(w => w.theme))]
   const globalCounts = progress.countFor(vocabulary)
 
-  const openPicker = (words, name) => setPicker({ words, name })
+  const openPicker = (words, name, packId = null) => setPicker({ words, name, packId })
   const closePicker = () => setPicker(null)
   const handleExercisePick = (exerciseType) => {
-    onStartSession(picker.words, picker.name, exerciseType)
+    onStartSession(picker.words, picker.name, exerciseType, picker.packId)
     setPicker(null)
   }
 
@@ -116,9 +117,9 @@ export default function HomeScreen({ vocabulary, progress, streak, silent, onlin
           </button>
         </section>
 
-        {/* Paquets par thème */}
+        {/* Paquets par thème (vocabulaire xlsm) */}
         <section>
-          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Par thème</h2>
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Mon vocabulaire — par thème</h2>
           <div className="grid grid-cols-2 gap-3">
             {themes.map(theme => {
               const themeWords = vocabulary.filter(w => w.theme === theme)
@@ -132,6 +133,29 @@ export default function HomeScreen({ vocabulary, progress, streak, silent, onlin
                 >
                   <p className="font-bold text-sm leading-tight">{theme}</p>
                   <p className="text-xs opacity-70 mt-0.5">{themeWords.length} mots</p>
+                  <ProgressBar known={counts.known} total={counts.total} />
+                  <p className="text-xs opacity-60 mt-1">{counts.known}/{counts.total} sus</p>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Paquets de l'application */}
+        <section className="mt-6">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Paquets de l'application</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {PACKS.map(pack => {
+              const counts = packsProgress.countFor(pack.id, pack.words)
+              return (
+                <button
+                  key={pack.id}
+                  onClick={() => openPicker(pack.words, pack.name, pack.id)}
+                  className={`${pack.color} border rounded-2xl p-3 text-left active:scale-95 transition-transform`}
+                >
+                  <p className="text-xl mb-1">{pack.emoji}</p>
+                  <p className="font-bold text-sm leading-tight">{pack.name}</p>
+                  <p className="text-xs opacity-70 mt-0.5">{pack.words.length} mots</p>
                   <ProgressBar known={counts.known} total={counts.total} />
                   <p className="text-xs opacity-60 mt-1">{counts.known}/{counts.total} sus</p>
                 </button>
