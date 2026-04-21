@@ -3,4 +3,4 @@ dist
 .env
 .env.local
 *.local
-src/data/lessons_raw.json
+

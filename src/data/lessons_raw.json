@@ -1,0 +1,688 @@
+[
+  {
+    "num": 1,
+    "folder": "L001-Vietnamese ASSIMIL",
+    "s": 5,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 2,
+    "folder": "L002-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 3,
+    "folder": "L003-Vietnamese ASSIMIL",
+    "s": 6,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 4,
+    "folder": "L004-Vietnamese ASSIMIL",
+    "s": 5,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 5,
+    "folder": "L005-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 6,
+    "folder": "L006-Vietnamese ASSIMIL",
+    "s": 6,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 7,
+    "folder": "L007-Vietnamese ASSIMIL",
+    "s": 8,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 8,
+    "folder": "L008-Vietnamese ASSIMIL",
+    "s": 5,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 9,
+    "folder": "L009-Vietnamese ASSIMIL",
+    "s": 6,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 10,
+    "folder": "L010-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 11,
+    "folder": "L011-Vietnamese ASSIMIL",
+    "s": 5,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 12,
+    "folder": "L012-Vietnamese ASSIMIL",
+    "s": 5,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 13,
+    "folder": "L013-Vietnamese ASSIMIL",
+    "s": 6,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 14,
+    "folder": "L014-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 15,
+    "folder": "L015-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 16,
+    "folder": "L016-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 17,
+    "folder": "L017-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 18,
+    "folder": "L018-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 19,
+    "folder": "L019-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 20,
+    "folder": "L020-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 21,
+    "folder": "L021-Vietnamese ASSIMIL",
+    "s": 12,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 22,
+    "folder": "L022-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 23,
+    "folder": "L023-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 24,
+    "folder": "L024-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 25,
+    "folder": "L025-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 26,
+    "folder": "L026-Vietnamese ASSIMIL",
+    "s": 8,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 27,
+    "folder": "L027-Vietnamese ASSIMIL",
+    "s": 7,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 28,
+    "folder": "L028-Vietnamese ASSIMIL",
+    "s": 12,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 29,
+    "folder": "L029-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 30,
+    "folder": "L030-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 31,
+    "folder": "L031-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 32,
+    "folder": "L032-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 33,
+    "folder": "L033-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 34,
+    "folder": "L034-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 35,
+    "folder": "L035-Vietnamese ASSIMIL",
+    "s": 11,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 36,
+    "folder": "L036-Vietnamese ASSIMIL",
+    "s": 10,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 37,
+    "folder": "L037-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 38,
+    "folder": "L038-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 39,
+    "folder": "L039-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 40,
+    "folder": "L040-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 41,
+    "folder": "L041-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 42,
+    "folder": "L042-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 43,
+    "folder": "L043-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 44,
+    "folder": "L044-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 45,
+    "folder": "L045-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 46,
+    "folder": "L046-Vietnamese ASSIMIL",
+    "s": 9,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 47,
+    "folder": "L047-Vietnamese ASSIMIL",
+    "s": 10,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 48,
+    "folder": "L048-Vietnamese ASSIMIL",
+    "s": 11,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 49,
+    "folder": "L049-Vietnamese ASSIMIL",
+    "s": 12,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 50,
+    "folder": "L050-Vietnamese ASSIMIL",
+    "s": 11,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 51,
+    "folder": "L051-Vietnamese ASSIMIL",
+    "s": 11,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 52,
+    "folder": "L052-Vietnamese ASSIMIL",
+    "s": 11,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 53,
+    "folder": "L053-Vietnamese ASSIMIL",
+    "s": 11,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 54,
+    "folder": "L054-Vietnamese ASSIMIL",
+    "s": 12,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 55,
+    "folder": "L055-Vietnamese ASSIMIL",
+    "s": 12,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 56,
+    "folder": "L056-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 57,
+    "folder": "L057-Vietnamese ASSIMIL",
+    "s": 13,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 58,
+    "folder": "L058-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 59,
+    "folder": "L059-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 60,
+    "folder": "L060-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 61,
+    "folder": "L061-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 62,
+    "folder": "L062-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 63,
+    "folder": "L063-Vietnamese ASSIMIL",
+    "s": 13,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 64,
+    "folder": "L064-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 65,
+    "folder": "L065-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 66,
+    "folder": "L066-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 67,
+    "folder": "L067-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 68,
+    "folder": "L068-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 69,
+    "folder": "L069-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 70,
+    "folder": "L070-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 71,
+    "folder": "L071-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 72,
+    "folder": "L072-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 73,
+    "folder": "L073-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 74,
+    "folder": "L074-Vietnamese ASSIMIL",
+    "s": 15,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 75,
+    "folder": "L075-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 76,
+    "folder": "L076-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 77,
+    "folder": "L077-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 78,
+    "folder": "L078-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 79,
+    "folder": "L079-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 80,
+    "folder": "L080-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 81,
+    "folder": "L081-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 82,
+    "folder": "L082-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 83,
+    "folder": "L083-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 84,
+    "folder": "L084-Vietnamese ASSIMIL",
+    "s": 15,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 85,
+    "folder": "L085-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 86,
+    "folder": "L086-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 87,
+    "folder": "L087-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 88,
+    "folder": "L088-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 89,
+    "folder": "L089-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 90,
+    "folder": "L090-Vietnamese ASSIMIL",
+    "s": 16,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 91,
+    "folder": "L091-Vietnamese ASSIMIL",
+    "s": 17,
+    "t": 0,
+    "title": true
+  },
+  {
+    "num": 92,
+    "folder": "L092-Vietnamese ASSIMIL",
+    "s": 17,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 93,
+    "folder": "L093-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 94,
+    "folder": "L094-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 95,
+    "folder": "L095-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 96,
+    "folder": "L096-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 97,
+    "folder": "L097-Vietnamese ASSIMIL",
+    "s": 14,
+    "t": 5,
+    "title": true
+  },
+  {
+    "num": 98,
+    "folder": "L098-Vietnamese ASSIMIL",
+    "s": 15,
+    "t": 5,
+    "title": true
+  }
+]
