@@ -173,7 +173,7 @@ export default function HomeScreen({ vocabulary, progress, packsProgress, streak
           >
             <span className="text-3xl">🎧</span>
             <div className="flex-1">
-              <p className="font-bold text-gray-800">Leçons Assimil</p>
+              <p className="font-bold text-gray-800">Compréhension orale</p>
               <p className="text-xs text-gray-400">98 leçons · écoute active phrase par phrase</p>
             </div>
             {!online

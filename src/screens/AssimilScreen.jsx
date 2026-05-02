@@ -431,7 +431,7 @@ export default function AssimilScreen({ online, onBack }) {
       <header className="bg-red-600 text-white px-4 py-3 flex items-center gap-3 shadow-md">
         <button onClick={onBack} className="text-red-200 text-xl p-1">‹</button>
         <div className="flex-1">
-          <h1 className="font-bold text-base">Leçons Assimil</h1>
+          <h1 className="font-bold text-base">Compréhension orale</h1>
           <p className="text-xs text-red-200">{lessonsRaw.length} leçons · {done} terminées · {review} à revoir</p>
         </div>
         {!online && (
@@ -441,7 +441,7 @@ export default function AssimilScreen({ online, onBack }) {
 
       {!online && (
         <div className="bg-orange-50 border-b border-orange-200 px-4 py-3 text-sm text-orange-700 text-center">
-          ⚠️ Les leçons Assimil nécessitent une connexion internet
+          ⚠️ La compréhension orale nécessite une connexion internet
         </div>
       )}
 
