@@ -10,15 +10,36 @@ function loadLessonProgress() {
   catch { return {} }
 }
 
+// ── Normalisation avant comparaison ─────────────────────────
+// En vietnamien, un espace précède souvent ! et ? (ex: "Chào cô !")
+// On normalise les deux chaînes pour ne pas pénaliser cet écart de style.
+function normalize(text) {
+  return text
+    .trim()
+    .replace(/\s+([!?.,;:])/g, '$1')  // supprime l'espace avant ponctuation
+    .replace(/\s+/g, ' ')             // normalise les espaces multiples
+}
+
 // ── Comparaison caractère par caractère (Unicode-safe) ──────
+// Règles :
+//   - ! en fin de phrase : facultatif (pas d'erreur si absent)
+//   - ? en fin de phrase : obligatoire (erreur si absent)
 function diffText(input, expected) {
-  const inp = [...input.trim()]
-  const exp = [...expected.trim()]
-  const len = Math.max(inp.length, exp.length)
+  let inp = normalize(input)
+  let exp = normalize(expected)
+
+  // Si la référence se termine par '!' et que l'input ne le met pas → on le retire de la référence
+  if (exp.endsWith('!') && !inp.endsWith('!')) {
+    exp = exp.slice(0, -1).trimEnd()
+  }
+
+  const inpChars = [...inp]
+  const expChars = [...exp]
+  const len = Math.max(inpChars.length, expChars.length)
   const result = []
   for (let i = 0; i < len; i++) {
-    const ic = inp[i]
-    const ec = exp[i]
+    const ic = inpChars[i]
+    const ec = expChars[i]
     if (ic === undefined)      result.push({ type: 'missing',  expected: ec })
     else if (ec === undefined) result.push({ type: 'extra',    input: ic })
     else if (ic === ec)        result.push({ type: 'correct',  char: ic })
