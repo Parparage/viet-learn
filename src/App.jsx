@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import HomeScreen from './screens/HomeScreen'
 import SessionScreen from './screens/SessionScreen'
 import AssimilScreen from './screens/AssimilScreen'
+import ExpressionOraleScreen from './screens/ExpressionOraleScreen'
 import { useProgress } from './hooks/useProgress'
 import { usePacksProgress } from './hooks/usePacksProgress'
 import { useStreak } from './hooks/useStreak'
@@ -64,6 +65,10 @@ export default function App() {
     return <AssimilScreen online={online} onBack={() => setScreen('home')} />
   }
 
+  if (screen === 'expression') {
+    return <ExpressionOraleScreen onBack={() => setScreen('home')} />
+  }
+
   const sessionProgress = session.packId
     ? packsProgress.getProgressFor(session.packId)
     : progress
@@ -96,6 +101,7 @@ export default function App() {
       onStartSession={startSession}
       onVocabUpdate={updateVocab}
       onOpenAssimil={() => setScreen('assimil')}
+      onOpenExpression={() => setScreen('expression')}
     />
   )
 }

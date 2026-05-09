@@ -28,7 +28,7 @@ function ProgressBar({ known, total }) {
   )
 }
 
-export default function HomeScreen({ vocabulary, progress, packsProgress, streak, silent, online, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil }) {
+export default function HomeScreen({ vocabulary, progress, packsProgress, streak, silent, online, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil, onOpenExpression }) {
   const fileRef = useRef(null)
   const [picker, setPicker] = useState(null) // { words, name, packId } | null
 
@@ -180,6 +180,22 @@ export default function HomeScreen({ vocabulary, progress, packsProgress, streak
               ? <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-lg">Hors-ligne</span>
               : <span className="text-gray-300 text-xl">›</span>
             }
+          </button>
+        </section>
+
+        {/* Expression orale */}
+        <section className="mt-6">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Parole</h2>
+          <button
+            onClick={onOpenExpression}
+            className="w-full bg-white border border-gray-200 rounded-2xl p-4 text-left shadow-sm active:scale-95 transition-transform flex items-center gap-4"
+          >
+            <span className="text-3xl">🗣️</span>
+            <div className="flex-1">
+              <p className="font-bold text-gray-800">Expression orale</p>
+              <p className="text-xs text-gray-400">6 niveaux · prononciation avec reconnaissance vocale</p>
+            </div>
+            <span className="text-gray-300 text-xl">›</span>
           </button>
         </section>
 
