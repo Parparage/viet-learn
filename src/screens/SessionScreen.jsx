@@ -48,9 +48,15 @@ export default function SessionScreen({ words, packName, exerciseType, allWords,
   const isSilent = silent || exerciseType === 'random-silent'
 
   const goTo = (i) => {
-    setIsFlipped(false)
-    if (i >= total) { setDone(true); return }
-    setTimeout(() => setIndex(i), 80)
+    if (i >= total) { setIsFlipped(false); setDone(true); return }
+    if (isFlipped) {
+      // Retourner la carte d'abord, attendre la fin de l'animation CSS (500ms)
+      // puis changer le mot une fois la face avant visible
+      setIsFlipped(false)
+      setTimeout(() => setIndex(i), 520)
+    } else {
+      setIndex(i)
+    }
   }
 
   const onKnown  = () => { progress.mark(word.viet, 'known');  goTo(index + 1) }
