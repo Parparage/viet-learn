@@ -3,20 +3,15 @@ import HomeScreen from './screens/HomeScreen'
 import SessionScreen from './screens/SessionScreen'
 import AssimilScreen from './screens/AssimilScreen'
 import ExpressionOraleScreen from './screens/ExpressionOraleScreen'
+import ManageWordsScreen from './screens/ManageWordsScreen'
 import { useProgress } from './hooks/useProgress'
 import { usePacksProgress } from './hooks/usePacksProgress'
 import { useStreak } from './hooks/useStreak'
 import { useSilentMode } from './hooks/useSilentMode'
+import { loadVocab as readVocab, saveVocab } from './utils/vocabStore'
 import { vocabulary as defaultVocab } from './data/words'
 
-const VOCAB_KEY = 'viet-vocab'
-
-function loadVocab() {
-  try {
-    const saved = localStorage.getItem(VOCAB_KEY)
-    return saved ? JSON.parse(saved) : defaultVocab
-  } catch { return defaultVocab }
-}
+const loadVocab = () => readVocab(defaultVocab)
 
 export default function App() {
   const [screen, setScreen] = useState('home')
@@ -58,7 +53,7 @@ export default function App() {
       console.info('Nouveaux mots (relancer generate_audio.py) :', newWords.map(w => `${w.id}. ${w.viet}`))
     }
     setVocabulary(words)
-    localStorage.setItem(VOCAB_KEY, JSON.stringify(words))
+    saveVocab(words)
   }
 
   if (screen === 'assimil') {
@@ -67,6 +62,16 @@ export default function App() {
 
   if (screen === 'expression') {
     return <ExpressionOraleScreen onBack={() => setScreen('home')} />
+  }
+
+  if (screen === 'manage') {
+    return (
+      <ManageWordsScreen
+        vocabulary={vocabulary}
+        onVocabUpdate={updateVocab}
+        onBack={() => setScreen('home')}
+      />
+    )
   }
 
   const sessionProgress = session.packId
@@ -102,6 +107,7 @@ export default function App() {
       onVocabUpdate={updateVocab}
       onOpenAssimil={() => setScreen('assimil')}
       onOpenExpression={() => setScreen('expression')}
+      onOpenManage={() => setScreen('manage')}
     />
   )
 }

@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { parseXlsm } from '../utils/importXlsm'
+import { isAppWord } from '../utils/vocabStore'
 import ExercisePicker from '../components/ExercisePicker'
 import { PACKS } from '../data/packs/index'
 
@@ -28,12 +29,13 @@ function ProgressBar({ known, total }) {
   )
 }
 
-export default function HomeScreen({ vocabulary, progress, packsProgress, streak, silent, online, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil, onOpenExpression }) {
+export default function HomeScreen({ vocabulary, progress, packsProgress, streak, silent, online, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil, onOpenExpression, onOpenManage }) {
   const fileRef = useRef(null)
   const [picker, setPicker] = useState(null) // { words, name, packId } | null
 
   const themes = [...new Set(vocabulary.map(w => w.theme))]
   const globalCounts = progress.countFor(vocabulary)
+  const myWordsCount = vocabulary.filter(isAppWord).length
 
   const openPicker = (words, name, packId = null) => setPicker({ words, name, packId })
   const closePicker = () => setPicker(null)
@@ -194,6 +196,26 @@ export default function HomeScreen({ vocabulary, progress, packsProgress, streak
             <div className="flex-1">
               <p className="font-bold text-gray-800">Expression orale</p>
               <p className="text-xs text-gray-400">6 niveaux · prononciation avec reconnaissance vocale</p>
+            </div>
+            <span className="text-gray-300 text-xl">›</span>
+          </button>
+        </section>
+
+        {/* Mes mots */}
+        <section className="mt-6">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Mon vocabulaire personnel</h2>
+          <button
+            onClick={onOpenManage}
+            className="w-full bg-white border border-gray-200 rounded-2xl p-4 text-left shadow-sm active:scale-95 transition-transform flex items-center gap-4"
+          >
+            <span className="text-3xl">✏️</span>
+            <div className="flex-1">
+              <p className="font-bold text-gray-800">Ajouter / gérer mes mots</p>
+              <p className="text-xs text-gray-400">
+                {myWordsCount > 0
+                  ? `${myWordsCount} mot${myWordsCount > 1 ? 's' : ''} ajouté${myWordsCount > 1 ? 's' : ''} · thèmes personnalisables`
+                  : 'Créer des mots et des thèmes, révisables aussitôt'}
+              </p>
             </div>
             <span className="text-gray-300 text-xl">›</span>
           </button>
