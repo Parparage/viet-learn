@@ -12,7 +12,7 @@
  * réécrit plus (voir la fusion dans utils/importXlsm.js).
  */
 import { useState, useMemo } from 'react'
-import { nextAppId, themesOf, findDuplicate, isAppWord, markDeleted, unmarkDeleted } from '../utils/vocabStore'
+import { nextAppId, themesOf, findDuplicate, isAppWord, markDeleted, unmarkDeleted, normalizeViet } from '../utils/vocabStore'
 
 const NEW_THEME = '__new__'
 
@@ -179,7 +179,7 @@ function WordList({ words, mode, onPick }) {
 }
 
 /* ─── Écran principal ───────────────────────────────────────── */
-export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack }) {
+export default function ManageWordsScreen({ vocabulary, missingAudio, onVocabUpdate, onBack }) {
   const [view,        setView]        = useState('menu')  // menu | add | edit | delete
   const [editingWord, setEditingWord] = useState(null)
   const [flash,       setFlash]       = useState('')
@@ -205,11 +205,16 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
 
   const handleEdit = ({ viet, fr, theme }) => {
     unmarkDeleted(viet)
+    // Si l'orthographe vietnamienne change, l'ancien MP3 ne correspond plus au mot.
+    // On lui attribue un ID applicatif : il n'a alors plus d'audio, ce qui le fait
+    // signaler « à régénérer » plutôt que de faire entendre une prononciation fausse.
+    const spellingChanged = normalizeViet(viet) !== normalizeViet(editingWord.viet)
     onVocabUpdate(vocabulary.map(w => {
       if (w.id !== editingWord.id) return w
       return {
         ...w,
         viet, fr, theme,
+        id: spellingChanged ? nextAppId(vocabulary) : w.id,
         // Le mot devient « pris en main » : un réimport Excel ne l'écrasera plus.
         source:   'app',
         addedAt:  w.addedAt ?? Date.now(),
@@ -230,16 +235,31 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
     notify('Mot supprimé.')
   }
 
-  /** Sauvegarde JSON — utile aussi pour générer les vrais MP3 côté script Python. */
-  const handleExport = () => {
-    const blob = new Blob([JSON.stringify(vocabulary, null, 2)], { type: 'application/json' })
+  const download = (data, filename) => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
     const url  = URL.createObjectURL(blob)
     const a    = document.createElement('a')
     a.href = url
-    a.download = `mon-vocabulaire-viet-${new Date().toISOString().slice(0, 10)}.json`
+    a.download = filename
     a.click()
     URL.revokeObjectURL(url)
   }
+
+  /** Sauvegarde complète du vocabulaire (copie de sécurité). */
+  const handleExport = () =>
+    download(vocabulary, `mon-vocabulaire-viet-${new Date().toISOString().slice(0, 10)}.json`)
+
+  /** Mots sans MP3 — à passer à generate_audio.py pour produire les vrais audios. */
+  const wordsWithoutAudio = useMemo(
+    () => vocabulary.filter(w => missingAudio?.has(w.id)),
+    [vocabulary, missingAudio]
+  )
+
+  const handleExportAudio = () =>
+    download(
+      wordsWithoutAudio.map(({ id, viet, fr, theme }) => ({ id, viet, fr, theme })),
+      `audio-a-generer-${new Date().toISOString().slice(0, 10)}.json`
+    )
 
   // Élément (et non composant local) : un composant redéclaré à chaque rendu
   // serait démonté puis remonté par React à chaque frappe.
@@ -387,6 +407,39 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
             </button>
           ))}
         </div>
+
+        {/* Indicateur : des mots attendent la régénération des MP3 */}
+        {wordsWithoutAudio.length > 0 && (
+          <div className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-4">
+            <p className="text-sm font-bold text-amber-800">
+              ⚠️ {wordsWithoutAudio.length} mot{wordsWithoutAudio.length > 1 ? 's' : ''} sans audio fidèle
+            </p>
+            <p className="text-xs text-amber-700 mt-1 leading-relaxed">
+              Ces mots n'ont pas encore de MP3 : leur prononciation vient de la synthèse
+              vocale du navigateur, dont les tons sont approximatifs. Exportez-les, lancez{' '}
+              <span className="font-mono">generate_audio.py</span>, puis redéployez —
+              l'alerte disparaîtra automatiquement.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {wordsWithoutAudio.slice(0, 8).map(w => (
+                <span key={w.id} className="text-xs bg-white border border-amber-200 text-amber-800 rounded-lg px-2 py-0.5">
+                  {w.viet}
+                </span>
+              ))}
+              {wordsWithoutAudio.length > 8 && (
+                <span className="text-xs text-amber-600 px-1 py-0.5">
+                  +{wordsWithoutAudio.length - 8}
+                </span>
+              )}
+            </div>
+            <button
+              onClick={handleExportAudio}
+              className="w-full mt-3 py-2.5 rounded-xl bg-amber-500 text-white font-semibold text-sm active:scale-95 transition-transform"
+            >
+              ↓ Exporter la liste pour générer les MP3
+            </button>
+          </div>
+        )}
 
         {flashEl}
 

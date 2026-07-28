@@ -32,7 +32,7 @@ const EXERCISE_LABELS = {
   'random-silent':   '🔇 Aléatoire silencieux',
 }
 
-export default function SessionScreen({ words, packName, exerciseType, allWords, progress, silent, onBack, onComplete }) {
+export default function SessionScreen({ words, packName, exerciseType, allWords, progress, silent, missingAudio, onBack, onComplete }) {
   const [chunk] = useState(() => words.slice(0, SESSION_SIZE))
   const [exerciseTypes] = useState(() => buildExerciseTypes(words.slice(0, SESSION_SIZE), exerciseType))
   const [index, setIndex] = useState(0)
@@ -46,6 +46,8 @@ export default function SessionScreen({ words, packName, exerciseType, allWords,
   const status = progress.getStatus(word?.viet)
   const counts = progress.countFor(chunk)
   const isSilent = silent || exerciseType === 'random-silent'
+  // Le mot n'a pas encore de MP3 : la prononciation entendue est synthétique.
+  const audioMissing = Boolean(word && missingAudio?.has(word.id))
 
   const goTo = (i) => {
     if (i >= total) { setIsFlipped(false); setDone(true); return }
@@ -146,6 +148,7 @@ export default function SessionScreen({ words, packName, exerciseType, allWords,
                 onFlip={() => setIsFlipped(f => !f)}
                 onSpeak={speak}
                 reverse={currentType === 'flashcard-fr-vn'}
+                audioMissing={audioMissing}
               />
             </div>
             {!isFlipped && <p className="text-sm text-gray-400 text-center">Appuyez sur la carte pour voir la traduction</p>}
@@ -173,6 +176,7 @@ export default function SessionScreen({ words, packName, exerciseType, allWords,
               onKnown={onKnown}
               onReview={onReview}
               silent={isSilent}
+              audioMissing={audioMissing}
             />
           </div>
         )}
@@ -186,6 +190,7 @@ export default function SessionScreen({ words, packName, exerciseType, allWords,
               onKnown={onKnown}
               onReview={onReview}
               silent={isSilent}
+              audioMissing={audioMissing}
             />
           </div>
         )}

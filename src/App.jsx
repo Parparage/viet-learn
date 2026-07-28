@@ -8,6 +8,7 @@ import { useProgress } from './hooks/useProgress'
 import { usePacksProgress } from './hooks/usePacksProgress'
 import { useStreak } from './hooks/useStreak'
 import { useSilentMode } from './hooks/useSilentMode'
+import { useMissingAudio } from './hooks/useMissingAudio'
 import { loadVocab as readVocab, saveVocab } from './utils/vocabStore'
 import { vocabulary as defaultVocab } from './data/words'
 
@@ -30,6 +31,7 @@ export default function App() {
   const packsProgress = usePacksProgress()
   const streak        = useStreak()
   const { silent, toggle: toggleSilent } = useSilentMode()
+  const missingAudio = useMissingAudio(vocabulary)
 
   const startSession = (words, name, exerciseType, packId = null) => {
     setSession({ words, name, type: exerciseType, packId })
@@ -68,6 +70,7 @@ export default function App() {
     return (
       <ManageWordsScreen
         vocabulary={vocabulary}
+        missingAudio={missingAudio}
         onVocabUpdate={updateVocab}
         onBack={() => setScreen('home')}
       />
@@ -88,6 +91,7 @@ export default function App() {
         allWords={vocabulary}
         progress={sessionProgress}
         silent={silent}
+        missingAudio={missingAudio}
         onBack={endSession}
         onComplete={continueSession}
       />
@@ -102,6 +106,7 @@ export default function App() {
       streak={streak}
       silent={silent}
       online={online}
+      missingAudio={missingAudio}
       onToggleSilent={toggleSilent}
       onStartSession={startSession}
       onVocabUpdate={updateVocab}

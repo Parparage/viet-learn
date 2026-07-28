@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import AudioWarning from './AudioWarning'
 
 function buildChoices(word, allWords) {
   const pool = allWords.filter(w => w.viet !== word.viet)
@@ -6,7 +7,7 @@ function buildChoices(word, allWords) {
   return [...shuffled, word].sort(() => Math.random() - 0.5)
 }
 
-export default function ExerciseQCM({ word, allWords, onKnown, onReview, silent }) {
+export default function ExerciseQCM({ word, allWords, onKnown, onReview, silent, audioMissing = false }) {
   const [choices] = useState(() => buildChoices(word, allWords))
   const [selected, setSelected] = useState(null)
   const [played, setPlayed] = useState(false)
@@ -67,6 +68,7 @@ export default function ExerciseQCM({ word, allWords, onKnown, onReview, silent 
         {silent && <p className="text-xs text-gray-400">Mode silencieux activé</p>}
         {!silent && !played && <p className="text-xs text-gray-400 animate-pulse">Lecture en cours…</p>}
         {!silent && played && <p className="text-xs text-gray-400">Appuyez pour réécouter</p>}
+        {!silent && audioMissing && <AudioWarning />}
       </div>
 
       {/* Choix */}

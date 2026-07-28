@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import AudioWarning from './AudioWarning'
 
 const normalize = (s) => s.trim().toLowerCase()
 
-export default function ExerciseDictee({ word, onKnown, onReview, silent }) {
+export default function ExerciseDictee({ word, onKnown, onReview, silent, audioMissing = false }) {
   const [input, setInput] = useState('')
   const [result, setResult] = useState(null) // null | 'correct' | 'wrong'
   const [attempts, setAttempts] = useState(0)
@@ -76,6 +77,7 @@ export default function ExerciseDictee({ word, onKnown, onReview, silent }) {
         </div>
         {silent && <p className="text-xs text-gray-400">Mode silencieux — le mot est affiché ci-dessous</p>}
         {silent && <p className="text-2xl font-bold text-gray-700">{word.viet}</p>}
+        {!silent && audioMissing && <AudioWarning />}
       </div>
 
       {/* Indice après 2 erreurs */}

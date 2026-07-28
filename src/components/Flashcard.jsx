@@ -1,4 +1,6 @@
-export default function Flashcard({ word, isFlipped, onFlip, onSpeak, reverse = false }) {
+import AudioWarning from './AudioWarning'
+
+export default function Flashcard({ word, isFlipped, onFlip, onSpeak, reverse = false, audioMissing = false }) {
   const front = reverse
     ? { label: 'Français', text: word.fr, lang: null }
     : { label: 'Vietnamien', text: word.viet, lang: 'vi' }
@@ -28,6 +30,7 @@ export default function Flashcard({ word, isFlipped, onFlip, onSpeak, reverse = 
               🔊
             </button>
           )}
+          {front.lang && audioMissing && <AudioWarning />}
         </div>
 
         {/* Verso */}
@@ -48,6 +51,7 @@ export default function Flashcard({ word, isFlipped, onFlip, onSpeak, reverse = 
               🔊
             </button>
           )}
+          {audioMissing && <AudioWarning tone="light" />}
         </div>
 
       </div>

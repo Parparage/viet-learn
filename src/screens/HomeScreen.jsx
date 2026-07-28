@@ -29,13 +29,14 @@ function ProgressBar({ known, total }) {
   )
 }
 
-export default function HomeScreen({ vocabulary, progress, packsProgress, streak, silent, online, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil, onOpenExpression, onOpenManage }) {
+export default function HomeScreen({ vocabulary, progress, packsProgress, streak, silent, online, missingAudio, onToggleSilent, onStartSession, onVocabUpdate, onOpenAssimil, onOpenExpression, onOpenManage }) {
   const fileRef = useRef(null)
   const [picker, setPicker] = useState(null) // { words, name, packId } | null
 
   const themes = [...new Set(vocabulary.map(w => w.theme))]
   const globalCounts = progress.countFor(vocabulary)
-  const myWordsCount = vocabulary.filter(isAppWord).length
+  const myWordsCount    = vocabulary.filter(isAppWord).length
+  const missingAudioNb  = missingAudio?.size ?? 0
 
   const openPicker = (words, name, packId = null) => setPicker({ words, name, packId })
   const closePicker = () => setPicker(null)
@@ -217,8 +218,25 @@ export default function HomeScreen({ vocabulary, progress, packsProgress, streak
                   : 'Créer des mots et des thèmes, révisables aussitôt'}
               </p>
             </div>
-            <span className="text-gray-300 text-xl">›</span>
+            {missingAudioNb > 0
+              ? <span className="bg-amber-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">{missingAudioNb}</span>
+              : <span className="text-gray-300 text-xl">›</span>
+            }
           </button>
+
+          {/* Indicateur : des mots attendent la régénération des MP3 */}
+          {missingAudioNb > 0 && (
+            <div className="mt-2 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
+              <p className="text-xs text-amber-800 font-semibold">
+                ⚠️ {missingAudioNb} mot{missingAudioNb > 1 ? 's' : ''} sans audio fidèle
+              </p>
+              <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">
+                Leur prononciation vient de la synthèse vocale du navigateur (tons approximatifs).
+                Exportez-les depuis « Mes mots », lancez <span className="font-mono">generate_audio.py</span>,
+                puis redéployez : l'alerte disparaîtra d'elle-même.
+              </p>
+            </div>
+          )}
         </section>
 
         {/* Import */}
