@@ -3,17 +3,16 @@
  *
  * Navigation : menu (3 actions) → ajouter | modifier | supprimer
  *
- * Les mots créés ici sont marqués `source: 'app'` et fusionnent avec le
- * vocabulaire Excel : ils apparaissent donc dans « Mon vocabulaire — par thème »
- * et partagent la même progression. Ils survivent aux réimports .xlsm
- * (voir la fusion dans utils/importXlsm.js).
+ * L'écran gère TOUT « Mon vocabulaire — par thème » : les mots créés ici comme
+ * ceux importés du fichier Excel. Les paquets intégrés de l'application, eux,
+ * restent hors de portée (données figées, progression séparée).
  *
- * Seuls les mots ajoutés ici sont modifiables : un mot venant de l'Excel doit
- * être corrigé dans le fichier source, sinon la correction serait perdue au
- * prochain import.
+ * Un mot créé — ou corrigé — ici est marqué `source: 'app'` : il est alors
+ * considéré comme pris en main par l'utilisateur et un réimport .xlsm ne le
+ * réécrit plus (voir la fusion dans utils/importXlsm.js).
  */
 import { useState, useMemo } from 'react'
-import { nextAppId, themesOf, findDuplicate, isAppWord } from '../utils/vocabStore'
+import { nextAppId, themesOf, findDuplicate, isAppWord, markDeleted, unmarkDeleted } from '../utils/vocabStore'
 
 const NEW_THEME = '__new__'
 
@@ -185,12 +184,10 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
   const [editingWord, setEditingWord] = useState(null)
   const [flash,       setFlash]       = useState('')
 
-  const myWords = useMemo(
-    () => vocabulary.filter(isAppWord).sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0)),
-    [vocabulary]
-  )
-  const themeCount = useMemo(() => new Set(myWords.map(w => w.theme)).size, [myWords])
-  const isEmpty = myWords.length === 0
+  // Tout « Mon vocabulaire » est gérable : mots du fichier Excel comme mots ajoutés ici.
+  const themeCount = useMemo(() => new Set(vocabulary.map(w => w.theme)).size, [vocabulary])
+  const addedCount = useMemo(() => vocabulary.filter(isAppWord).length, [vocabulary])
+  const isEmpty = vocabulary.length === 0
 
   const notify = (msg) => {
     setFlash(msg)
@@ -198,6 +195,7 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
   }
 
   const handleAdd = ({ viet, fr, theme }) => {
+    unmarkDeleted(viet) // réajouter un mot supprimé lève sa pierre tombale
     onVocabUpdate([
       ...vocabulary,
       { id: nextAppId(vocabulary), theme, viet, fr, source: 'app', addedAt: Date.now() },
@@ -206,9 +204,20 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
   }
 
   const handleEdit = ({ viet, fr, theme }) => {
-    onVocabUpdate(
-      vocabulary.map(w => (w.id === editingWord.id ? { ...w, viet, fr, theme } : w))
-    )
+    unmarkDeleted(viet)
+    onVocabUpdate(vocabulary.map(w => {
+      if (w.id !== editingWord.id) return w
+      return {
+        ...w,
+        viet, fr, theme,
+        // Le mot devient « pris en main » : un réimport Excel ne l'écrasera plus.
+        source:   'app',
+        addedAt:  w.addedAt ?? Date.now(),
+        // Mémorise la graphie d'origine pour que la ligne Excel ne ressuscite pas
+        // à côté de la version corrigée.
+        origViet: w.origViet ?? (isAppWord(w) ? undefined : w.viet),
+      }
+    }))
     setEditingWord(null)
     setView('edit')
     notify('Mot modifié.')
@@ -216,17 +225,18 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
 
   const handleDelete = (word) => {
     if (!window.confirm(`Supprimer « ${word.viet} » ? La progression associée sera perdue.`)) return
+    markDeleted(word.viet) // empêche sa réapparition au prochain import Excel
     onVocabUpdate(vocabulary.filter(w => w.id !== word.id))
     notify('Mot supprimé.')
   }
 
   /** Sauvegarde JSON — utile aussi pour générer les vrais MP3 côté script Python. */
   const handleExport = () => {
-    const blob = new Blob([JSON.stringify(myWords, null, 2)], { type: 'application/json' })
+    const blob = new Blob([JSON.stringify(vocabulary, null, 2)], { type: 'application/json' })
     const url  = URL.createObjectURL(blob)
     const a    = document.createElement('a')
     a.href = url
-    a.download = `mes-mots-viet-${new Date().toISOString().slice(0, 10)}.json`
+    a.download = `mon-vocabulaire-viet-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -264,7 +274,7 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
       <div className="min-h-screen bg-gray-50 flex flex-col max-w-lg mx-auto">
         <Header title="Modifier un mot" subtitle="Choisissez le mot à corriger" onBack={() => setView('menu')} />
         <main className="flex-1 px-4 py-5 overflow-y-auto">
-          <WordList words={myWords} mode="edit" onPick={setEditingWord} />
+          <WordList words={vocabulary} mode="edit" onPick={setEditingWord} />
           {flashEl}
         </main>
       </div>
@@ -289,6 +299,14 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
           >
             Annuler
           </button>
+          {!isAppWord(editingWord) && (
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mt-3 leading-relaxed">
+              ⚠️ Ce mot vient du fichier Excel. Votre correction sera conservée lors des
+              prochains imports. En revanche, si vous changez l'orthographe vietnamienne,
+              son audio continuera de prononcer l'ancienne version jusqu'à régénération
+              des MP3.
+            </p>
+          )}
         </main>
       </div>
     )
@@ -302,7 +320,7 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
         <main className="flex-1 px-4 py-5 overflow-y-auto">
           {isEmpty
             ? <p className="text-center text-gray-400 text-sm mt-8">Il n'y a plus aucun mot à supprimer.</p>
-            : <WordList words={myWords} mode="delete" onPick={handleDelete} />
+            : <WordList words={vocabulary} mode="delete" onPick={handleDelete} />
           }
           {flashEl}
         </main>
@@ -326,7 +344,7 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
     },
     {
       key: 'delete', emoji: '🗑', label: 'Supprimer un mot',
-      desc: isEmpty ? 'Aucun mot à supprimer' : 'Retirer définitivement un mot',
+      desc: isEmpty ? 'Aucun mot à supprimer' : 'Retirer un mot de mon vocabulaire',
       color: 'bg-red-100 text-red-700 border-red-200',
       disabled: isEmpty,
     },
@@ -336,7 +354,7 @@ export default function ManageWordsScreen({ vocabulary, onVocabUpdate, onBack })
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-lg mx-auto">
       <Header
         title="Mes mots"
-        subtitle={`${myWords.length} mot${myWords.length > 1 ? 's' : ''} ajouté${myWords.length > 1 ? 's' : ''} · ${themeCount} thème${themeCount > 1 ? 's' : ''}`}
+        subtitle={`${vocabulary.length} mot${vocabulary.length > 1 ? 's' : ''} · ${themeCount} thème${themeCount > 1 ? 's' : ''}${addedCount > 0 ? ` · ${addedCount} ajouté${addedCount > 1 ? 's' : ''}` : ''}`}
         onBack={onBack}
         action={!isEmpty && (
           <button

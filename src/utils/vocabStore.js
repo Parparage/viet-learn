@@ -14,6 +14,7 @@
  */
 
 export const VOCAB_KEY   = 'viet-vocab'
+export const DELETED_KEY = 'viet-vocab-deleted'
 export const APP_ID_BASE = 5000
 
 /** Clé de comparaison d'un mot vietnamien (insensible à la casse et aux espaces). */
@@ -37,6 +38,27 @@ export function loadVocab(defaultVocab) {
 
 export function saveVocab(words) {
   localStorage.setItem(VOCAB_KEY, JSON.stringify(words))
+}
+
+/* ── Mots supprimés volontairement (« pierres tombales ») ──────────────
+ * Sans cette liste, un mot supprimé dans l'application réapparaîtrait au
+ * prochain import du fichier Excel, qui le contient toujours.
+ * Ajouter à nouveau le même mot lève automatiquement sa pierre tombale.
+ */
+export function loadDeleted() {
+  try { return JSON.parse(localStorage.getItem(DELETED_KEY) || '[]') }
+  catch { return [] }
+}
+
+export function markDeleted(viet) {
+  const key = normalizeViet(viet)
+  const next = [...new Set([...loadDeleted(), key])]
+  localStorage.setItem(DELETED_KEY, JSON.stringify(next))
+}
+
+export function unmarkDeleted(viet) {
+  const key = normalizeViet(viet)
+  localStorage.setItem(DELETED_KEY, JSON.stringify(loadDeleted().filter(k => k !== key)))
 }
 
 /**
