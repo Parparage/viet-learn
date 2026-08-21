@@ -118,3 +118,30 @@ export function searchKey(text) {
     .replace(/đ/g, 'd')               // « đ » est une lettre à part, non décomposable
     .trim()
 }
+
+/** Vrai si le caractère fait partie d'un mot (après normalisation : a-z et 0-9). */
+function isWordChar(c) {
+  return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
+}
+
+/**
+ * Vrai si `text` contient la recherche **en début d'un de ses mots**.
+ *
+ * Taper « no » trouve « Nouilles » et « Noix de coco », mais plus
+ * « Un peu (indénombrable) », où « no » était noyé au milieu du mot.
+ * Une saisie de plusieurs mots reste possible : « noix de » trouve
+ * « Noix de coco ».
+ *
+ * `q` doit déjà être passé par searchKey(). Comparé à une expression
+ * régulière, ce parcours évite d'avoir à échapper la saisie de l'utilisateur.
+ */
+export function matchesSearch(q, text) {
+  const key = searchKey(text)
+  let i = key.indexOf(q)
+  while (i !== -1) {
+    // Début de chaîne, ou précédé d'un séparateur (espace, parenthèse, tiret…)
+    if (i === 0 || !isWordChar(key[i - 1])) return true
+    i = key.indexOf(q, i + 1)
+  }
+  return false
+}

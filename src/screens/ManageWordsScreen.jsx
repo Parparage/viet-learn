@@ -12,7 +12,7 @@
  * réécrit plus (voir la fusion dans utils/importXlsm.js).
  */
 import { useState, useMemo } from 'react'
-import { nextAppId, themesOf, findDuplicate, isAppWord, markDeleted, unmarkDeleted, normalizeViet, searchKey } from '../utils/vocabStore'
+import { nextAppId, themesOf, findDuplicate, isAppWord, markDeleted, unmarkDeleted, normalizeViet, searchKey, matchesSearch } from '../utils/vocabStore'
 
 const NEW_THEME = '__new__'
 
@@ -135,7 +135,9 @@ function WordForm({ vocabulary, word, onSave }) {
 /* ─── Liste des mots : recherche + regroupement par thème ─── */
 function WordList({ words, mode, onPick }) {
   const [query, setQuery] = useState('')
-  const q = searchKey(query)
+
+  // Saisie normalisée une seule fois : la correspondance doit débuter un mot.
+  const q = useMemo(() => searchKey(query), [query])
 
   // La recherche porte uniquement sur le mot vietnamien et sa traduction.
   // Le thème en est volontairement exclu : le faire correspondre renverrait
@@ -143,8 +145,8 @@ function WordList({ words, mode, onPick }) {
   const filtered = useMemo(() => {
     if (!q) return words
     return words.filter(w =>
-      searchKey(w.viet).includes(q) ||
-      searchKey(w.fr).includes(q)
+      matchesSearch(q, w.viet) ||
+      matchesSearch(q, w.fr)
     )
   }, [words, q])
 

@@ -4,11 +4,13 @@ import SessionScreen from './screens/SessionScreen'
 import AssimilScreen from './screens/AssimilScreen'
 import ExpressionOraleScreen from './screens/ExpressionOraleScreen'
 import ManageWordsScreen from './screens/ManageWordsScreen'
+import ExitConfirm from './components/ExitConfirm'
 import { useProgress } from './hooks/useProgress'
 import { usePacksProgress } from './hooks/usePacksProgress'
 import { useStreak } from './hooks/useStreak'
 import { useSilentMode } from './hooks/useSilentMode'
 import { useMissingAudio } from './hooks/useMissingAudio'
+import { useExitGuard } from './hooks/useExitGuard'
 import { loadVocab as readVocab, saveVocab } from './utils/vocabStore'
 import { vocabulary as defaultVocab } from './data/words'
 
@@ -48,6 +50,16 @@ export default function App() {
     setScreen('home')
   }
 
+  // Bouton « retour » du téléphone : on recule dans l'application plutôt que
+  // de la fermer. Retourne false uniquement à l'accueil, où la confirmation
+  // de sortie prend le relais.
+  const handleHardwareBack = () => {
+    if (screen === 'session') { endSession(); return true }
+    if (screen !== 'home')    { setScreen('home'); return true }
+    return false
+  }
+  const { askExit, cancelExit, confirmExit } = useExitGuard(handleHardwareBack)
+
   const updateVocab = (words) => {
     const existing = new Set(vocabulary.map(w => w.viet.toLowerCase()))
     const newWords = words.filter(w => !existing.has(w.viet.toLowerCase()))
@@ -58,16 +70,19 @@ export default function App() {
     saveVocab(words)
   }
 
+  const sessionProgress = session.packId
+    ? packsProgress.getProgressFor(session.packId)
+    : progress
+
+  // L'écran courant est calculé puis rendu sous la modale de sortie,
+  // afin que celle-ci puisse s'afficher par-dessus n'importe quel écran.
+  let current
   if (screen === 'assimil') {
-    return <AssimilScreen online={online} onBack={() => setScreen('home')} />
-  }
-
-  if (screen === 'expression') {
-    return <ExpressionOraleScreen onBack={() => setScreen('home')} />
-  }
-
-  if (screen === 'manage') {
-    return (
+    current = <AssimilScreen online={online} onBack={() => setScreen('home')} />
+  } else if (screen === 'expression') {
+    current = <ExpressionOraleScreen onBack={() => setScreen('home')} />
+  } else if (screen === 'manage') {
+    current = (
       <ManageWordsScreen
         vocabulary={vocabulary}
         missingAudio={missingAudio}
@@ -75,14 +90,8 @@ export default function App() {
         onBack={() => setScreen('home')}
       />
     )
-  }
-
-  const sessionProgress = session.packId
-    ? packsProgress.getProgressFor(session.packId)
-    : progress
-
-  if (screen === 'session') {
-    return (
+  } else if (screen === 'session') {
+    current = (
       <SessionScreen
         key={`${session.name}-${session.words[0]?.id}`}
         words={session.words}
@@ -96,23 +105,30 @@ export default function App() {
         onComplete={continueSession}
       />
     )
+  } else {
+    current = (
+      <HomeScreen
+        vocabulary={vocabulary}
+        progress={progress}
+        packsProgress={packsProgress}
+        streak={streak}
+        silent={silent}
+        online={online}
+        missingAudio={missingAudio}
+        onToggleSilent={toggleSilent}
+        onStartSession={startSession}
+        onVocabUpdate={updateVocab}
+        onOpenAssimil={() => setScreen('assimil')}
+        onOpenExpression={() => setScreen('expression')}
+        onOpenManage={() => setScreen('manage')}
+      />
+    )
   }
 
   return (
-    <HomeScreen
-      vocabulary={vocabulary}
-      progress={progress}
-      packsProgress={packsProgress}
-      streak={streak}
-      silent={silent}
-      online={online}
-      missingAudio={missingAudio}
-      onToggleSilent={toggleSilent}
-      onStartSession={startSession}
-      onVocabUpdate={updateVocab}
-      onOpenAssimil={() => setScreen('assimil')}
-      onOpenExpression={() => setScreen('expression')}
-      onOpenManage={() => setScreen('manage')}
-    />
+    <>
+      {current}
+      {askExit && <ExitConfirm onCancel={cancelExit} onQuit={confirmExit} />}
+    </>
   )
 }
