@@ -43,6 +43,7 @@ export async function parseXlsm(file, existingVocab = []) {
   )
 
   const words = []
+  const usedIds = new Set()
   for (let i = 1; i < rows.length; i++) {
     const [theme, viet, fr] = rows[i]
     const v = String(viet || '').trim()
@@ -52,8 +53,15 @@ export async function parseXlsm(file, existingVocab = []) {
     const key = normalizeViet(v)
     if (deleted.has(key) || owned.has(key) || replaced.has(key)) continue
 
+    // L'ID connu n'est repris que pour la première occurrence : si le fichier
+    // contient deux fois la même orthographe (homonymes dans deux thèmes),
+    // la seconde reçoit un ID neuf plutôt que de dupliquer celui de la première.
+    let id = existingMap.get(key)
+    if (id === undefined || usedIds.has(id)) id = nextId++
+    usedIds.add(id)
+
     words.push({
-      id:     existingMap.get(key) ?? nextId++,  // conserve l'ID audio si déjà connu
+      id,
       theme:  String(theme || '').trim(),
       viet:   v,
       fr:     f,

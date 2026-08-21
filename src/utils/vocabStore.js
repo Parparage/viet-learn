@@ -85,10 +85,36 @@ export function themesOf(vocabulary) {
 
 /**
  * Cherche un mot déjà présent avec le même texte vietnamien.
+ *
+ * La recherche est limitée au thème lorsqu'il est fourni : une même orthographe
+ * peut légitimement exister dans plusieurs thèmes avec des sens différents
+ * (« cao » = grand en Adjectifs, mais autre chose ailleurs). Seul un doublon
+ * à l'intérieur d'un même thème est une vraie erreur de saisie.
+ *
  * `excludeId` permet d'ignorer le mot en cours de modification.
  * Retourne le mot trouvé, ou undefined.
  */
-export function findDuplicate(vocabulary, viet, excludeId = null) {
+export function findDuplicate(vocabulary, viet, excludeId = null, theme = null) {
   const key = normalizeViet(viet)
-  return vocabulary.find(w => normalizeViet(w.viet) === key && w.id !== excludeId)
+  return vocabulary.find(w =>
+    normalizeViet(w.viet) === key &&
+    w.id !== excludeId &&
+    (theme === null || w.theme === theme)
+  )
+}
+
+/**
+ * Clé de recherche : minuscules, sans accents ni tons, « đ » ramené à « d ».
+ *
+ * Permet de retrouver « cơm » en tapant « com », ou « Đường » en tapant
+ * « duong » — indispensable depuis un clavier français, où saisir les
+ * diacritiques vietnamiens est laborieux.
+ */
+export function searchKey(text) {
+  return String(text || '')
+    .normalize('NFD')                 // sépare les lettres de leurs diacritiques
+    .replace(/[\u0300-\u036f]/g, '')  // supprime accents et marques de ton
+    .toLowerCase()
+    .replace(/đ/g, 'd')               // « đ » est une lettre à part, non décomposable
+    .trim()
 }

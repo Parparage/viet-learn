@@ -12,7 +12,7 @@
  * réécrit plus (voir la fusion dans utils/importXlsm.js).
  */
 import { useState, useMemo } from 'react'
-import { nextAppId, themesOf, findDuplicate, isAppWord, markDeleted, unmarkDeleted, normalizeViet } from '../utils/vocabStore'
+import { nextAppId, themesOf, findDuplicate, isAppWord, markDeleted, unmarkDeleted, normalizeViet, searchKey } from '../utils/vocabStore'
 
 const NEW_THEME = '__new__'
 
@@ -53,9 +53,10 @@ function WordForm({ vocabulary, word, onSave }) {
     if (!f) return setError('La traduction française est obligatoire.')
     if (!t) return setError('Choisissez un thème ou créez-en un nouveau.')
 
-    const clash = findDuplicate(vocabulary, v, word?.id ?? null)
+    // Doublon jugé dans le thème seulement : les homonymes inter-thèmes sont permis.
+    const clash = findDuplicate(vocabulary, v, word?.id ?? null, t)
     if (clash) {
-      return setError(`« ${clash.viet} » existe déjà dans le thème « ${clash.theme || 'sans thème'} ».`)
+      return setError(`« ${clash.viet} » existe déjà dans le thème « ${t} » (${clash.fr}).`)
     }
 
     onSave({ viet: v, fr: f, theme: t })
@@ -131,19 +132,82 @@ function WordForm({ vocabulary, word, onSave }) {
   )
 }
 
-/* ─── Liste des mots, groupés par thème ─────────────────────── */
+/* ─── Liste des mots : recherche + regroupement par thème ─── */
 function WordList({ words, mode, onPick }) {
+  const [query, setQuery] = useState('')
+  const q = searchKey(query)
+
+  // La recherche porte sur le vietnamien, la traduction ET le thème.
+  const filtered = useMemo(() => {
+    if (!q) return words
+    return words.filter(w =>
+      searchKey(w.viet).includes(q) ||
+      searchKey(w.fr).includes(q) ||
+      searchKey(w.theme).includes(q)
+    )
+  }, [words, q])
+
+  // Un même mot peut exister dans plusieurs thèmes avec des sens différents.
+  // On repère ces homonymes pour afficher leur thème directement sur la ligne,
+  // afin de ne jamais modifier ou supprimer le mauvais.
+  const homonyms = useMemo(() => {
+    const count = new Map()
+    for (const w of filtered) {
+      const k = searchKey(w.viet)
+      count.set(k, (count.get(k) || 0) + 1)
+    }
+    return new Set([...count.entries()].filter(([, n]) => n > 1).map(([k]) => k))
+  }, [filtered])
+
   const byTheme = useMemo(() => {
     const map = new Map()
-    for (const w of words) {
+    for (const w of filtered) {
       if (!map.has(w.theme)) map.set(w.theme, [])
       map.get(w.theme).push(w)
     }
     return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0], 'fr'))
-  }, [words])
+  }, [filtered])
 
   return (
     <div className="space-y-4">
+
+      {/* Barre de recherche — reste visible au défilement */}
+      <div className="sticky top-0 z-10 bg-gray-50 pt-1 pb-2">
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">
+            🔍
+          </span>
+          <input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Rechercher un mot, une traduction, un thème…"
+            className="w-full pl-9 pr-10 py-3 rounded-xl border-2 border-gray-200 focus:border-red-400 outline-none text-sm bg-white"
+            autoComplete="off" autoCorrect="off" spellCheck={false}
+          />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full text-gray-400 active:bg-gray-100"
+              aria-label="Effacer la recherche"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-gray-400 mt-1.5 px-1">
+          {query
+            ? `${filtered.length} résultat${filtered.length > 1 ? 's' : ''} sur ${words.length}`
+            : `${words.length} mot${words.length > 1 ? 's' : ''}`}
+          {' · accents et tons ignorés'}
+        </p>
+      </div>
+
+      {filtered.length === 0 && (
+        <p className="text-center text-gray-400 text-sm py-10">
+          Aucun mot ne correspond à « {query} ».
+        </p>
+      )}
+
       {byTheme.map(([themeName, list]) => (
         <div key={themeName}>
           <p className="text-sm font-bold text-gray-600 mb-2">
@@ -157,7 +221,15 @@ function WordList({ words, mode, onPick }) {
               >
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-800 truncate">{w.viet}</p>
-                  <p className="text-xs text-gray-400 truncate">{w.fr}</p>
+                  <p className="text-xs text-gray-400 truncate">
+                    {w.fr}
+                    {/* Homonyme : on rappelle le thème pour lever l'ambiguïté */}
+                    {homonyms.has(searchKey(w.viet)) && (
+                      <span className="ml-1.5 bg-amber-100 text-amber-700 rounded px-1.5 py-0.5 text-[10px] font-semibold">
+                        {w.theme}
+                      </span>
+                    )}
+                  </p>
                 </div>
                 <button
                   onClick={() => onPick(w)}
