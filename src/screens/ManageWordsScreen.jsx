@@ -137,13 +137,14 @@ function WordList({ words, mode, onPick }) {
   const [query, setQuery] = useState('')
   const q = searchKey(query)
 
-  // La recherche porte sur le vietnamien, la traduction ET le thème.
+  // La recherche porte uniquement sur le mot vietnamien et sa traduction.
+  // Le thème en est volontairement exclu : le faire correspondre renverrait
+  // tous les mots de la section, dont aucun ne contient forcément la saisie.
   const filtered = useMemo(() => {
     if (!q) return words
     return words.filter(w =>
       searchKey(w.viet).includes(q) ||
-      searchKey(w.fr).includes(q) ||
-      searchKey(w.theme).includes(q)
+      searchKey(w.fr).includes(q)
     )
   }, [words, q])
 
@@ -180,7 +181,7 @@ function WordList({ words, mode, onPick }) {
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder="Rechercher un mot, une traduction, un thème…"
+            placeholder="Rechercher un mot ou sa traduction…"
             className="w-full pl-9 pr-10 py-3 rounded-xl border-2 border-gray-200 focus:border-red-400 outline-none text-sm bg-white"
             autoComplete="off" autoCorrect="off" spellCheck={false}
           />
